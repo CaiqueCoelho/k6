@@ -5,6 +5,8 @@ export const options = {
   scenarios: {
     ui: {
       executor: 'shared-iterations',
+      vus: 5,
+      iterations: 10,
       options: {
         browser: {
           type: 'chromium',
@@ -24,6 +26,12 @@ export default async function () {
   try {
     await page.goto("https://test.k6.io/my_messages.php");
 
+    let header = await page.locator("h2").textContent();
+
+    check(header, {
+      'status page header is Unauthorized': (h) => h == "Unauthorized",
+    });
+
     await page.locator('input[name="login"]').type("admin");
     await page.locator('input[name="password"]').type("123");
 
@@ -32,10 +40,12 @@ export default async function () {
       page.locator('input[type="submit"]').click(),
     ]);
 
-    const header = await page.locator("h2").textContent();
+    header = await page.locator("h2").textContent();
     check(header, {
       header: (h) => h == "Welcome, admin!",
     });
+
+    page.screenshot({ path: 'screenshot/authenticated.png' });
 
     const navigationTiming = JSON.parse(await page.evaluate(() => {
       const [navigation] = performance.getEntriesByType('navigation');

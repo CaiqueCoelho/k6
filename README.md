@@ -56,3 +56,12 @@ k6 run test.js --out json=full_result.json
 
 Passing with success exit code 0
 Failing with exit non-zero code, like 1 or 99
+
+### Run k6 in cloud from jenkins
+
+k6 cloud script.js --token <GRAFANA_TOKEN>
+
+Or just make sure you have a global env secret called K6_CLOUD_TOKEN with the value of your K6 Cloud token from Grafana Stack Token
+
+And make sure you have the project id in the file or as env variable exported
+export K6_CLOUD_PROJECT_ID=<YOUR_PROJECT_ID>
